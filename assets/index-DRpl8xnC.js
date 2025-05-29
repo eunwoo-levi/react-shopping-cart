@@ -15665,7 +15665,6 @@ const EmptyCartItemUIContainer = newStyled.section`
 function App() {
   const { addAllCartItemsInSelected, selectedCartItems } = useSelectedCartContext();
   const [cartItems, setCartItems] = reactExports.useState([]);
-  console.log("App component rendered", cartItems);
   reactExports.useEffect(() => {
     const fetchCartItems = async () => {
       try {
