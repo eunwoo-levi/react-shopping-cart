@@ -13147,7 +13147,7 @@ function createBrowserRouter(routes, opts) {
     unstable_getContext: opts == null ? void 0 : opts.unstable_getContext,
     future: opts == null ? void 0 : opts.future,
     history: createBrowserHistory({ window: opts == null ? void 0 : opts.window }),
-    hydrationData: parseHydrationData(),
+    hydrationData: (opts == null ? void 0 : opts.hydrationData) || parseHydrationData(),
     routes,
     mapRouteProperties,
     hydrationRouteProperties,
@@ -15800,7 +15800,10 @@ const router = createBrowserRouter(
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: ROUTES.CONFIRMATION, element: /* @__PURE__ */ jsxRuntimeExports.jsx(ConfirmationPage, {}) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "*", element: /* @__PURE__ */ jsxRuntimeExports.jsx(NotFoundPage, {}) })
     ] })
-  )
+  ),
+  {
+    basename: "/react-shopping-cart/"
+  }
 );
 async function enableMocking() {
   const isLocalhost = location.hostname === "localhost";
