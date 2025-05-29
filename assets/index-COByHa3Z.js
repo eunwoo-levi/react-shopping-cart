@@ -15495,23 +15495,6 @@ const CartItemCardContainer = newStyled.div`
   flex-direction: column;
   gap: 12px;
 `;
-function CartList({ cartItems, setCartItems, addAllCartItemsInSelected }) {
-  const handleAllCartItemsInSelected = (e2) => {
-    const isChecked = e2.target.checked;
-    if (!isChecked) {
-      addAllCartItemsInSelected([]);
-      return;
-    }
-    addAllCartItemsInSelected(cartItems);
-  };
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(CartListContainer, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(AllSelectContainer, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(SelectInput, { type: "checkbox", onChange: handleAllCartItemsInSelected }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "전체 선택" })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx(CartItemCardContainer, { children: cartItems.map((cartItem) => /* @__PURE__ */ jsxRuntimeExports.jsx(CartItemCard, { cartItem, setCartItems }, cartItem.id)) })
-  ] });
-}
 const OrderPriceSummaryContainer = newStyled.section`
   width: 100%;
   height: 125px;
@@ -15556,39 +15539,23 @@ const TotalPurchasePrice = newStyled.div`
 const PriceBox = newStyled.span`
   font-size: 24px;
 `;
-function OrderPriceSummary() {
-  const { selectedCartItems } = useSelectedCartContext();
-  const totalPrice = selectedCartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-  const deliveryFee = totalPrice >= 1e5 ? 0 : 3e3;
-  const totalPurchasePrice = totalPrice + deliveryFee;
-  return /* @__PURE__ */ jsxRuntimeExports.jsxs(OrderPriceSummaryContainer, { children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(DeliveryFeeLabel, { children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(DeliveryFeeIcon, { src: "./infoLabelIcon.svg", alt: "Delivery Fee Label Icon" }),
-      "총 주문 금액이 100,000원 이상일 경우 무료 배송됩니다."
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(TotalOrderPrice, { children: [
-      "주문 금액",
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(PriceBox, { children: [
-        totalPrice.toLocaleString(),
-        "원"
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(DeliveryFee, { "data-testid": "delivery-fee", children: [
-      "배송비",
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(PriceBox, { children: [
-        deliveryFee.toLocaleString(),
-        "원"
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(TotalPurchasePrice, { "data-testid": "total-purchase-price", children: [
-      "총 결제 금액",
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(PriceBox, { children: [
-        totalPurchasePrice.toLocaleString(),
-        "원"
-      ] })
-    ] })
-  ] });
-}
+const ButtonCSS$2 = css`
+  background-color: #000;
+  border-radius: 8px;
+  padding: 8px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  transition: scale 0.2s ease, background-color 0.2s ease;
+  &:hover {
+    scale: 1.1;
+  }
+
+  &:disabled {
+    background-color: #bebebe;
+    cursor: not-allowed;
+  }
+`;
 function Navbar({ title, url }) {
   const navigate = useNavigate();
   const handleClick = () => {
@@ -15596,7 +15563,7 @@ function Navbar({ title, url }) {
       return;
     navigate(url);
   };
-  return /* @__PURE__ */ jsxRuntimeExports.jsx(NavbarContainer, { onClick: handleClick, children: title });
+  return /* @__PURE__ */ jsx2(NavbarContainer, { onClick: handleClick, children: /* @__PURE__ */ jsx2(Button, { css: ButtonCSS$2, title, onClick: handleClick }) });
 }
 const NavbarContainer = newStyled.nav`
   width: 100%;
@@ -15662,9 +15629,39 @@ const EmptyCartItemUIContainer = newStyled.section`
   justify-content: center;
   align-items: center;
 `;
+function CartListSkeleton() {
+  return /* @__PURE__ */ jsxRuntimeExports.jsx(SkeletonContainer, { children: Array.from({ length: 3 }).map((_, index) => /* @__PURE__ */ jsxRuntimeExports.jsx(SkeletonCard, {}, index)) });
+}
+const SkeletonContainer = newStyled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+const SkeletonCard = newStyled.div`
+  height: 150px;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  animation: pulse 1.5s infinite ease-in-out;
+
+  @keyframes pulse {
+    0% {
+      background-color: #e0e0e0;
+    }
+    50% {
+      background-color: #f5f5f5;
+    }
+    100% {
+      background-color: #e0e0e0;
+    }
+  }
+`;
+const CartList = React.lazy(() => __vitePreload(() => import("./CartList-Oo-zDqEN.js"), true ? [] : void 0));
+const OrderPriceSummary = React.lazy(() => __vitePreload(() => import("./OrderPriceSummary-C1pHZQlk.js"), true ? [] : void 0));
 function App() {
   const { addAllCartItemsInSelected, selectedCartItems } = useSelectedCartContext();
   const [cartItems, setCartItems] = reactExports.useState([]);
+  const [loading, setLoading] = reactExports.useState(true);
   reactExports.useEffect(() => {
     const fetchCartItems = async () => {
       try {
@@ -15677,6 +15674,8 @@ function App() {
           console.error("Failed to fetch cart items:", error.message);
           alert("장바구니 아이템을 불러오는 데 실패했습니다. 다시 시도해주세요.");
         }
+      } finally {
+        setLoading(false);
       }
     };
     fetchCartItems();
@@ -15685,7 +15684,7 @@ function App() {
     /* @__PURE__ */ jsxRuntimeExports.jsx(Navbar, { title: "SHOP", url: ROUTES.ROOT }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(AppContent, { children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(CartHeader, { cartTypeQuantity: cartItems.length }),
-      cartItems.length > 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      loading ? /* @__PURE__ */ jsxRuntimeExports.jsx(CartListSkeleton, {}) : cartItems.length > 0 ? /* @__PURE__ */ jsxRuntimeExports.jsxs(reactExports.Suspense, { fallback: /* @__PURE__ */ jsxRuntimeExports.jsx(CartListSkeleton, {}), children: [
         /* @__PURE__ */ jsxRuntimeExports.jsx(
           CartList,
           {
@@ -15820,3 +15819,19 @@ enableMocking().then(() => {
     /* @__PURE__ */ jsxRuntimeExports.jsx(React.StrictMode, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectedCartProvider, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(RouterProvider, { router }) }) })
   );
 });
+export {
+  AllSelectContainer as A,
+  CartListContainer as C,
+  DeliveryFeeLabel as D,
+  OrderPriceSummaryContainer as O,
+  PriceBox as P,
+  SelectInput as S,
+  TotalOrderPrice as T,
+  CartItemCardContainer as a,
+  CartItemCard as b,
+  DeliveryFeeIcon as c,
+  DeliveryFee as d,
+  TotalPurchasePrice as e,
+  jsxRuntimeExports as j,
+  useSelectedCartContext as u
+};
