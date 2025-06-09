@@ -15716,7 +15716,7 @@ const NavbarContainer = newStyled.nav`
 const getCartItems = () => {
   return httpClient.get("/cart-items");
 };
-const CartList = React.lazy(() => __vitePreload(() => import("./CartList-CHQMDjVV.js"), true ? [] : void 0));
+const CartList = React.lazy(() => __vitePreload(() => import("./CartList-G9Hot5q5.js"), true ? [] : void 0));
 const OrderPriceSummary$2 = React.lazy(() => __vitePreload(() => Promise.resolve().then(() => OrderPriceSummary$1), true ? void 0 : void 0));
 function CartPage() {
   const { cartItems, updateCartItems, selectedCartItems, updateSelectedCartItem, removeSelectedCartItem } = useCartContext();
@@ -16455,7 +16455,7 @@ function OrderReviewPage() {
   const selectedCartItems = getSelectedCartItemsFromLocalStorage();
   return /* @__PURE__ */ jsxs(OrderPageContainer, { children: [
     /* @__PURE__ */ jsx2(Navbar, { title: "◀", url: ROUTES.ROOT }),
-    /* @__PURE__ */ jsxs(OrderPageContent, { children: [
+    /* @__PURE__ */ jsxs(OrderPageContent, { "data-testid": "order-page-content", children: [
       /* @__PURE__ */ jsx2(CartHeader, { cartTypeQuantity: selectedCartItems.length }),
       selectedCartItems.length > 0 ? /* @__PURE__ */ jsxs(Fragment, { children: [
         /* @__PURE__ */ jsx2(ReviewCartList, { selectedCartItems }),
