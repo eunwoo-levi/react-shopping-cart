@@ -18863,11 +18863,54 @@ const rawCartItems = [
     }
   }
 ];
+const coupons = [
+  {
+    id: 1,
+    code: "FIXED5000",
+    description: "5,000원 할인 쿠폰",
+    discountType: "fixed",
+    discount: 5e3,
+    minimumAmount: 1e5,
+    expirationDate: "2025-11-30"
+  },
+  {
+    id: 2,
+    code: "BOGO",
+    description: "2개 구매 시 1개 무료 쿠폰",
+    discountType: "buyXgetY",
+    buyQuantity: 2,
+    getQuantity: 1,
+    expirationDate: "2025-06-30"
+  },
+  {
+    id: 3,
+    code: "FREESHIPPING",
+    description: "5만원 이상 구매 시 무료 배송 쿠폰",
+    discountType: "freeShipping",
+    minimumAmount: 5e4,
+    expirationDate: "2025-08-31"
+  },
+  {
+    id: 4,
+    code: "MIRACLESALE",
+    description: "미라클모닝 30% 할인 쿠폰",
+    discountType: "percentage",
+    discount: 30,
+    availableTime: {
+      start: "04:00:00",
+      end: "07:00:00"
+    },
+    expirationDate: "2025-07-31"
+  }
+];
 const BASE_URL = "http://techcourse-lv2-alb-974870821.ap-northeast-2.elb.amazonaws.com";
 let cartItems = [...rawCartItems];
 const handlers = [
   http.get(`${BASE_URL}/cart-items*`, () => {
     return HttpResponse.json({ content: cartItems });
+  }),
+  http.get(`${BASE_URL}/coupons*`, () => {
+    return HttpResponse.json(coupons);
   }),
   http.patch(`${BASE_URL}/cart-items/:id`, async ({ params, request }) => {
     const id = Number(params.id);

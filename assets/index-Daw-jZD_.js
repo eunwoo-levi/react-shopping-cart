@@ -15716,7 +15716,7 @@ const NavbarContainer = newStyled.nav`
 const getCartItems = () => {
   return httpClient.get("/cart-items");
 };
-const CartList = React.lazy(() => __vitePreload(() => import("./CartList-yPlQD7Y2.js"), true ? [] : void 0));
+const CartList = React.lazy(() => __vitePreload(() => import("./CartList-CHQMDjVV.js"), true ? [] : void 0));
 const OrderPriceSummary$2 = React.lazy(() => __vitePreload(() => Promise.resolve().then(() => OrderPriceSummary$1), true ? void 0 : void 0));
 function CartPage() {
   const { cartItems, updateCartItems, selectedCartItems, updateSelectedCartItem, removeSelectedCartItem } = useCartContext();
@@ -16487,7 +16487,7 @@ const router = createBrowserRouter(
 );
 async function enableMocking() {
   const isLocalhost = location.hostname === "localhost";
-  const { worker } = await __vitePreload(() => import("./browser-DM_nZrKc.js"), true ? [] : void 0);
+  const { worker } = await __vitePreload(() => import("./browser-CIE-1QvB.js"), true ? [] : void 0);
   return worker.start({
     serviceWorker: {
       url: isLocalhost ? "/mockServiceWorker.js" : "/react-shopping-cart/mockServiceWorker.js"
