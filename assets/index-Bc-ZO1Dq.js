@@ -15161,6 +15161,7 @@ const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = reactExports.useState([]);
   const [selectedCartItems, setSelectedCartItems] = reactExports.useState([]);
   const [selectedCoupons, setSelectedCoupons] = reactExports.useState([]);
+  const [totalPrice, setTotalPrice] = reactExports.useState(0);
   const [totalDiscountPrice, setTotalDiscountPrice] = reactExports.useState(0);
   const [deliveryFee, setDeliveryFee] = reactExports.useState(0);
   const [totalPurchasePrice, setTotalPurchasePrice] = reactExports.useState(0);
@@ -15192,6 +15193,9 @@ const CartProvider = ({ children }) => {
   const updateSelectedCoupons = (coupons) => {
     setSelectedCoupons(coupons);
   };
+  const updateTotalPrice = (price) => {
+    setTotalPrice(price);
+  };
   const updateTotalDiscountPrice = (totalDiscountPrice2) => {
     setTotalDiscountPrice(totalDiscountPrice2);
   };
@@ -15208,6 +15212,7 @@ const CartProvider = ({ children }) => {
       updateCartItemQuantity,
       selectedCartItems,
       selectedCoupons,
+      totalPrice,
       totalDiscountPrice,
       deliveryFee,
       totalPurchasePrice,
@@ -15215,11 +15220,12 @@ const CartProvider = ({ children }) => {
       addAllCartItemsInSelected,
       removeSelectedCartItem,
       updateSelectedCoupons,
+      updateTotalPrice,
       updateTotalDiscountPrice,
       updateTotalPurchasePrice,
       updateDeliveryFee
     }),
-    [cartItems, selectedCartItems, selectedCoupons, totalDiscountPrice, deliveryFee, totalPurchasePrice]
+    [cartItems, selectedCartItems, selectedCoupons, totalPrice, totalDiscountPrice, deliveryFee, totalPurchasePrice]
   );
   return /* @__PURE__ */ jsxRuntimeExports.jsx(CartContext.Provider, { value, children });
 };
@@ -15716,12 +15722,21 @@ const NavbarContainer = newStyled.nav`
 const getCartItems = () => {
   return httpClient.get("/cart-items");
 };
-const CartList = React.lazy(() => __vitePreload(() => import("./CartList-C0wJNNMd.js"), true ? [] : void 0));
+const CartList = React.lazy(() => __vitePreload(() => import("./CartList-BgZTH7TK.js"), true ? [] : void 0));
 const OrderPriceSummary$2 = React.lazy(() => __vitePreload(() => Promise.resolve().then(() => OrderPriceSummary$1), true ? void 0 : void 0));
 function CartPage() {
-  const { cartItems, updateCartItems, selectedCartItems, updateSelectedCartItem, removeSelectedCartItem } = useCartContext();
+  const {
+    cartItems,
+    selectedCartItems,
+    updateTotalPrice,
+    updateCartItems,
+    updateSelectedCartItem,
+    removeSelectedCartItem
+  } = useCartContext();
   const [loading, setLoading] = reactExports.useState(true);
   reactExports.useEffect(() => {
+    const calculatedTotalPrice = selectedCartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
+    updateTotalPrice(calculatedTotalPrice);
     const fetchCartItems = async () => {
       try {
         const response = await getCartItems();
@@ -15752,7 +15767,8 @@ function CartPage() {
       }
     });
     saveSelectedCartItemsToLocalStorage(selectedCartItems);
-  }, [cartItems]);
+  }, [cartItems, selectedCartItems]);
+  console.log("selectedCartItems:", selectedCartItems);
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(CartPageContainer, { children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx(Navbar, { title: "SHOP", url: ROUTES.ROOT }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(CartPageContent, { children: [
@@ -16215,12 +16231,12 @@ function CouponList({ onClose }) {
     updateSelectedCoupons,
     totalDiscountPrice,
     deliveryFee,
+    totalPrice,
     updateTotalDiscountPrice,
     updateTotalPurchasePrice
   } = useCartContext();
   const { coupons, getInvalidCouponIds, getBestTwoCoupons, isCouponLoading, message } = useCoupons();
   const selectedCartItems = getSelectedCartItemsFromLocalStorage();
-  const totalPrice = selectedCartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   const highestPrice = Math.max(...selectedCartItems.map((i) => i.product.price));
   const highestPriceCartItem = selectedCartItems.filter((item) => item.product.price === highestPrice)[0];
   const invalidCouponIds = getInvalidCouponIds(totalPrice);
@@ -16376,12 +16392,28 @@ const PriceBox = newStyled.span`
   font-size: 24px;
 `;
 function OrderPriceSummary({ useCoupon = false }) {
-  const { selectedCartItems, totalDiscountPrice, updateDeliveryFee, totalPurchasePrice, updateTotalPurchasePrice } = useCartContext();
+  const {
+    totalPrice,
+    totalDiscountPrice,
+    totalPurchasePrice,
+    selectedCartItems,
+    updateTotalPrice,
+    updateDeliveryFee,
+    updateTotalPurchasePrice
+  } = useCartContext();
   const [suburbExtraFee, setSuburbExtraFee] = reactExports.useState(0);
-  const totalPrice = selectedCartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
   const baseDeliveryFee = totalPrice < DELIVERY_FEE_THRESHOLD ? DELIVERY_FEE : 0;
   const finalDeliveryFee = baseDeliveryFee + suburbExtraFee;
+  console.log("??????????또잉 스토리지<", getSelectedCartItemsFromLocalStorage());
+  console.log("토털프라이스", totalPrice);
+  console.log("ㅇㅇ렄리너ㅏㅣㄷㄹ", totalPrice + finalDeliveryFee - totalDiscountPrice);
+  console.log("totalPurchasePrice", totalPurchasePrice);
   reactExports.useEffect(() => {
+    const calculatedTotalPrice = getSelectedCartItemsFromLocalStorage().reduce(
+      (acc, item) => acc + item.product.price * item.quantity,
+      0
+    );
+    updateTotalPrice(calculatedTotalPrice);
     updateDeliveryFee(finalDeliveryFee);
     updateTotalPurchasePrice(totalPrice + finalDeliveryFee - totalDiscountPrice);
   }, [totalPrice, suburbExtraFee, totalDiscountPrice]);
@@ -16401,7 +16433,7 @@ function OrderPriceSummary({ useCoupon = false }) {
       /* @__PURE__ */ jsxRuntimeExports.jsx(DeliveryFeeIcon, { src: "./infoLabelIcon.svg", alt: "Delivery Fee Label Icon" }),
       "총 주문 금액이 100,000원 이상일 경우 무료 배송됩니다."
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs(TotalOrderPrice, { children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsxs(TotalOrderPrice, { "data-testid": "total-order-price", children: [
       "주문 금액",
       /* @__PURE__ */ jsxRuntimeExports.jsxs(PriceBox, { children: [
         totalPrice.toLocaleString(),
