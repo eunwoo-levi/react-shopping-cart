@@ -13117,7 +13117,7 @@ function createBrowserRouter(routes, opts) {
     unstable_getContext: opts == null ? void 0 : opts.unstable_getContext,
     future: opts == null ? void 0 : opts.future,
     history: createBrowserHistory({ window: opts == null ? void 0 : opts.window }),
-    hydrationData: parseHydrationData(),
+    hydrationData: (opts == null ? void 0 : opts.hydrationData) || parseHydrationData(),
     routes,
     mapRouteProperties,
     hydrationRouteProperties,
@@ -15716,7 +15716,7 @@ const NavbarContainer = newStyled.nav`
 const getCartItems = () => {
   return httpClient.get("/cart-items");
 };
-const CartList = React.lazy(() => __vitePreload(() => import("./CartList-G9Hot5q5.js"), true ? [] : void 0));
+const CartList = React.lazy(() => __vitePreload(() => import("./CartList-C0wJNNMd.js"), true ? [] : void 0));
 const OrderPriceSummary$2 = React.lazy(() => __vitePreload(() => Promise.resolve().then(() => OrderPriceSummary$1), true ? void 0 : void 0));
 function CartPage() {
   const { cartItems, updateCartItems, selectedCartItems, updateSelectedCartItem, removeSelectedCartItem } = useCartContext();
@@ -16483,7 +16483,10 @@ const router = createBrowserRouter(
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: ROUTES.CONFIRMATION, element: /* @__PURE__ */ jsxRuntimeExports.jsx(ConfirmationPage, {}) }),
       /* @__PURE__ */ jsxRuntimeExports.jsx(Route, { path: "*", element: /* @__PURE__ */ jsxRuntimeExports.jsx(NotFoundPage, {}) })
     ] })
-  )
+  ),
+  {
+    basename: "/react-shopping-cart"
+  }
 );
 async function enableMocking() {
   const isLocalhost = location.hostname === "localhost";
